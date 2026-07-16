@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Park now — Parkwise</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./theme.css" /><script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{colors:{forest:{50:'#f1f6f3',100:'#e2ede7',600:'#1b644c',800:'#124533',900:'#0b3529',950:'#07271f'}},fontFamily:{sans:['Inter','sans-serif'],display:['Fraunces','serif']},boxShadow:{soft:'0 14px 40px rgba(16,36,28,.09)'}}}};</script>
+  </head>
+  <body class="min-h-screen font-sans text-slate-900 antialiased">
+    <header class="border-b border-slate-200 bg-white"><div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-5 sm:h-20 sm:px-8"><a href="./index.html" class="flex items-center gap-2.5 focus-visible:rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-500"><span class="grid size-9 place-items-center rounded-xl bg-forest-900 text-sm font-bold text-white">P</span><span class="font-display text-2xl font-semibold text-forest-950">Parkwise</span></a><span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Quick parking</span></div></header>
+    <main class="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
+      <div class="grid gap-10 lg:grid-cols-[1fr_340px] lg:gap-16">
+        <section>
+          <a href="./index.html" class="text-sm font-semibold text-forest-600">← Back</a>
+          <p class="mt-8 text-xs font-bold uppercase tracking-[.18em] text-forest-600">Arriving now</p>
+          <h1 class="mt-3 font-display text-5xl font-medium leading-none tracking-tight text-forest-950 sm:text-6xl">Let’s find your spot.</h1>
+          <p class="mt-5 max-w-xl leading-7 text-slate-600">Choose the type you need. Parking starts immediately after a spot is assigned.</p>
+          <form class="mt-10 grid gap-6" action="./active-session.html">
+            <fieldset><legend class="text-sm font-semibold text-forest-950">Spot type</legend><div class="mt-3 grid gap-3 sm:grid-cols-3">
+              <label class="cursor-pointer"><input class="peer sr-only" type="radio" name="spot" checked /><span class="flex min-h-20 items-center justify-between rounded-xl border border-slate-300 px-4 transition peer-checked:border-forest-800 peer-checked:bg-forest-50"><span><strong class="block text-sm">Standard</strong><small class="mt-1 block text-xs text-slate-500">7 available</small></span><span class="size-2 rounded-full bg-emerald-500"></span></span></label>
+              <label class="cursor-pointer"><input class="peer sr-only" type="radio" name="spot" /><span class="flex min-h-20 items-center justify-between rounded-xl border border-slate-300 px-4 transition peer-checked:border-forest-800 peer-checked:bg-forest-50"><span><strong class="block text-sm">EV charging</strong><small class="mt-1 block text-xs text-slate-500">3 available</small></span><span class="size-2 rounded-full bg-emerald-500"></span></span></label>
+              <label class="cursor-pointer"><input class="peer sr-only" type="radio" name="spot" /><span class="flex min-h-20 items-center justify-between rounded-xl border border-slate-300 px-4 transition peer-checked:border-forest-800 peer-checked:bg-forest-50"><span><strong class="block text-sm">Accessible</strong><small class="mt-1 block text-xs text-slate-500">2 available</small></span><span class="size-2 rounded-full bg-emerald-500"></span></span></label>
+            </div></fieldset>
+            <div class="grid gap-5 sm:grid-cols-2"><label class="grid gap-2 text-sm font-semibold text-forest-950">License plate<input class="min-h-12 rounded-xl border border-slate-300 px-4 font-normal uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500" required placeholder="ABC 123" /></label><label class="grid gap-2 text-sm font-semibold text-forest-950">Phone number<input class="min-h-12 rounded-xl border border-slate-300 px-4 font-normal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500" required type="tel" placeholder="+1 555 0100" /></label></div>
+            <div class="rounded-xl bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900"><strong>Four-hour limit.</strong> You can request an extension later if it does not affect upcoming reservations.</div>
+            <button class="min-h-14 rounded-xl bg-forest-900 px-6 font-bold text-white transition hover:bg-forest-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-500">Start parking</button>
+          </form>
+        </section>
+        <aside class="h-fit rounded-2xl bg-forest-800 p-5 text-white lg:mt-24"><div class="flex items-center gap-2"><span class="availability-dot size-2 rounded-full bg-emerald-300"></span><span class="text-[11px] font-semibold uppercase tracking-wider text-white/60">Available now</span></div><p class="mt-4"><strong class="font-display text-5xl font-medium">12</strong> <span class="text-sm text-white/60">open spots</span></p><div class="mt-5 border-t border-white/15 pt-4 text-sm text-white/65">Your exact spot number appears immediately after confirmation.</div></aside>
+      </div>
+    </main>
+  </body>
+</html>

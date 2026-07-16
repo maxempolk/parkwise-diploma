@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Active session — Parkwise</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" /><link rel="stylesheet" href="./theme.css" /><script src="https://cdn.tailwindcss.com"></script><script>tailwind.config={theme:{extend:{colors:{forest:{50:'#f1f6f3',100:'#e2ede7',600:'#1b644c',800:'#124533',900:'#0b3529',950:'#07271f'},lime:'#d4ecb8'},fontFamily:{sans:['Inter'],display:['Fraunces']},boxShadow:{soft:'0 14px 40px rgba(16,36,28,.09)'}}}};</script>
+  </head>
+  <body class="min-h-screen bg-forest-950 font-sans text-white antialiased">
+    <header class="border-b border-white/10"><div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-5 sm:h-20 sm:px-8"><a href="./index.html" class="flex items-center gap-2.5"><span class="grid size-9 place-items-center rounded-xl border border-white/25 text-sm font-bold text-lime">P</span><span class="font-display text-2xl font-semibold">Parkwise</span></a><a href="./my-parking.html" class="text-sm font-semibold text-white/65">My parking</a></div></header>
+    <main class="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14"><div class="grid gap-8 lg:grid-cols-[1fr_320px]">
+      <section class="rounded-3xl border border-white/10 bg-white/[.04] p-6 text-center sm:p-9"><span id="session-status" class="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-lime"><span class="availability-dot size-2 rounded-full bg-lime"></span><span id="session-status-text">Loading parking</span></span><p class="mt-8 text-sm text-white/50">Your assigned spot</p><h1 id="spot-number" class="mt-2 font-display text-8xl font-medium leading-none sm:text-9xl">—</h1><div class="mx-auto mt-8 grid max-w-md grid-cols-2 divide-x divide-white/10 border-y border-white/10 py-5"><div><span class="text-xs text-white/45">Elapsed time</span><p id="timer" class="mt-2 text-2xl font-semibold">—</p></div><div><span class="text-xs text-white/45">Final cost</span><p id="current-cost" class="mt-2 text-2xl font-semibold">—</p></div></div><div id="session-actions" class="mx-auto mt-8 grid max-w-md gap-3 sm:grid-cols-2"><button onclick="toggleExtension()" class="min-h-14 rounded-xl border border-white/25 font-bold text-white hover:bg-white/5">Extend parking</button><button onclick="openFinishDialog()" class="min-h-14 rounded-xl bg-lime font-bold text-forest-950 hover:bg-white">Finish parking</button></div></section>
+      <aside class="grid content-start gap-4"><section class="rounded-2xl border border-white/10 p-5"><div class="flex justify-between"><h2 class="font-semibold">Session time</h2><span id="percent" class="text-xs text-lime">—</span></div><div class="mt-5 h-1.5 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-label="Parking time elapsed" aria-valuemin="0" aria-valuemax="100"><div id="progress" class="h-full w-0 rounded-full bg-lime"></div></div><div class="mt-4 grid grid-cols-2 text-xs"><div><span class="block text-[10px] uppercase tracking-wider text-white/35">Elapsed</span><strong id="elapsed" class="mt-1 block">—</strong></div><div class="text-right"><span id="remaining-label" class="block text-[10px] uppercase tracking-wider text-white/35">Remaining</span><strong id="remaining" class="mt-1 block">—</strong></div></div><div class="mt-4 flex justify-between border-t border-white/10 pt-3 text-[10px] text-white/30"><span id="started-at">Started —</span><span id="ends-at">Ends —</span></div></section><section class="rounded-2xl border border-white/10 p-5"><h2 class="text-sm font-semibold">Session details</h2><dl class="mt-4 grid gap-3 text-sm"><div class="flex justify-between"><dt class="text-white/45">Vehicle</dt><dd id="vehicle">—</dd></div><div class="flex justify-between"><dt class="text-white/45">Spot type</dt><dd id="spot-type">—</dd></div><div class="flex justify-between"><dt class="text-white/45">Expected end</dt><dd id="expected-end">—</dd></div></dl></section><div id="extension" class="hidden rounded-2xl bg-white p-5 text-forest-950"><h2 class="font-semibold">Request extension</h2><p class="mt-2 text-xs leading-5 text-slate-500">Choose a new expected departure time.</p><input id="extension-time" class="mt-4 min-h-12 w-full rounded-xl border border-slate-300 px-4" type="datetime-local" step="1800" /><button onclick="extendSession()" class="mt-3 min-h-12 w-full rounded-xl bg-forest-900 font-bold text-white">Check availability</button></div></aside>
+    </div></main>
+    <div id="lookup" class="fixed inset-0 z-50 grid place-items-end bg-black/60 p-4 sm:place-items-center"><section class="w-full max-w-sm rounded-2xl bg-white p-6 text-forest-950"><h2 class="font-display text-3xl font-medium">Find your parking</h2><p class="mt-3 text-sm leading-6 text-slate-500">Enter the same details you used to start or book parking.</p><form id="lookup-form" class="mt-5 grid gap-3"><label class="grid gap-1.5 text-sm font-semibold">Phone number<input id="phone" class="min-h-12 rounded-xl border border-slate-300 px-4 font-normal" type="tel" required /></label><label class="grid gap-1.5 text-sm font-semibold">License plate<input id="license-plate" class="min-h-12 rounded-xl border border-slate-300 px-4 font-normal uppercase" required /></label><p id="lookup-error" class="hidden text-sm text-rose-700" role="alert"></p><button class="min-h-12 rounded-xl bg-forest-900 font-bold text-white">Show active parking</button></form></section></div>
+    <div id="finish" class="hidden fixed inset-0 z-50 grid place-items-end bg-black/60 p-4 sm:place-items-center"><section class="w-full max-w-sm rounded-2xl bg-white p-6 text-forest-950"><h2 class="font-display text-3xl font-medium">Finish parking?</h2><p class="mt-3 text-sm leading-6 text-slate-500">Your final charge will be calculated from the real session duration.</p><button onclick="finishSession()" class="mt-6 flex min-h-12 w-full items-center justify-center rounded-xl bg-forest-900 font-bold text-white">Confirm and finish</button><button onclick="document.getElementById('finish').classList.add('hidden')" class="mt-2 min-h-12 w-full font-semibold text-slate-500">Keep parking</button></section></div>
+    <script>
+      const API_URL = "http://localhost:8000/api";
+      let session = null;
+      let phone = "";
+      let licensePlate = "";
+      const elements = Object.fromEntries(["timer", "current-cost", "percent", "progress", "elapsed", "remaining", "remaining-label", "started-at", "ends-at", "expected-end", "spot-number", "spot-type", "vehicle", "session-status-text", "session-actions", "extension-time", "lookup", "lookup-error"].map((id) => [id, document.getElementById(id)]));
+      const formatDuration = (milliseconds) => { const minutes = Math.max(0, Math.floor(milliseconds / 60000)); return `${Math.floor(minutes / 60)}h ${minutes % 60}m`; };
+      const formatClock = (timestamp) => new Date(timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      const formatSpotType = (value) => value === "ev" ? "EV charging" : value === "accessible" ? "Accessible" : "Standard";
+
+      async function request(path, options = {}) {
+        const response = await fetch(`${API_URL}${path}`, { ...options, headers: { "Content-Type": "application/json", ...(options.headers || {}) } });
+        const body = await response.json().catch(() => null);
+        if (!response.ok) throw new Error(body?.detail?.message || "The request could not be completed.");
+        return body;
+      }
+
+      function renderSession() {
+        if (!session) return;
+        const startedAt = new Date(session.started_at).getTime();
+        const expectedEnd = new Date(session.expected_end_at).getTime();
+        const completed = session.status === "completed";
+        const current = completed && session.ended_at ? new Date(session.ended_at).getTime() : Date.now();
+        const elapsed = current - startedAt;
+        const overdue = !completed && current > expectedEnd;
+        const progress = Math.min(100, Math.round((elapsed / Math.max(1, expectedEnd - startedAt)) * 100));
+
+        elements["session-status-text"].textContent = completed ? "Parking completed" : overdue ? "Parking overdue" : "Parking active";
+        elements["spot-number"].textContent = String(session.spot.number).padStart(2, "0");
+        elements.timer.textContent = formatDuration(elapsed);
+        elements["current-cost"].textContent = session.total_cost ? `$${session.total_cost}` : "At finish";
+        elements.percent.textContent = `${progress}%`;
+        elements.progress.style.width = `${progress}%`;
+        elements.elapsed.textContent = formatDuration(elapsed);
+        elements["remaining-label"].textContent = overdue ? "Overdue" : completed ? "Ended" : "Remaining";
+        elements.remaining.textContent = formatDuration(completed && session.ended_at ? current - startedAt : overdue ? current - expectedEnd : expectedEnd - current);
+        elements["started-at"].textContent = `Started ${formatClock(startedAt)}`;
+        elements["ends-at"].textContent = completed && session.ended_at ? `Ended ${formatClock(current)}` : overdue ? `Overdue ${formatDuration(current - expectedEnd)}` : `Ends ${formatClock(expectedEnd)}`;
+        elements["expected-end"].textContent = formatClock(expectedEnd);
+        elements.vehicle.textContent = session.license_plate;
+        elements["spot-type"].textContent = formatSpotType(session.spot.spot_type);
+        elements["session-actions"].classList.toggle("hidden", completed);
+      }
+
+      async function fetchSession() {
+        const params = new URLSearchParams({ phone, license_plate: licensePlate });
+        const overview = await request(`/me?${params}`);
+        const active = overview.sessions.find((item) => item.status === "active" || item.status === "overdue" || item.status === "completed");
+        if (!active) throw new Error("No parking session was found for these details.");
+        session = active;
+        localStorage.setItem("parkwise.parkingSession", JSON.stringify(session));
+        renderSession();
+      }
+
+      async function loadSession(event) {
+        event?.preventDefault();
+        phone = document.getElementById("phone").value.trim();
+        licensePlate = document.getElementById("license-plate").value.trim().toUpperCase();
+        elements["lookup-error"].classList.add("hidden");
+        try {
+          await fetchSession();
+          localStorage.setItem("parkwise-phone", phone);
+          localStorage.setItem("parkwise-license-plate", licensePlate);
+          elements.lookup.classList.add("hidden");
+        } catch (error) {
+          elements["lookup-error"].textContent = error.message;
+          elements["lookup-error"].classList.remove("hidden");
+        }
+      }
+
+      function toggleExtension() {
+        if (!session) return;
+        elements["extension-time"].value = new Date(new Date(session.expected_end_at).getTime() + 30 * 60000).toISOString().slice(0, 16);
+        document.getElementById("extension").classList.toggle("hidden");
+      }
+
+      async function extendSession() {
+        if (!session || !elements["extension-time"].value) return;
+        try {
+          session = await request(`/sessions/${session.id}/extend?${new URLSearchParams({ phone, license_plate: licensePlate })}`, { method: "POST", body: JSON.stringify({ expected_end_at: new Date(elements["extension-time"].value).toISOString() }) });
+          localStorage.setItem("parkwise.parkingSession", JSON.stringify(session));
+          document.getElementById("extension").classList.add("hidden");
+          renderSession();
+        } catch (error) { window.alert(error.message); }
+      }
+
+      function openFinishDialog() { if (session) document.getElementById("finish").classList.remove("hidden"); }
+
+      async function finishSession() {
+        if (!session) return;
+        try {
+          session = await request(`/sessions/${session.id}/complete?${new URLSearchParams({ phone, license_plate: licensePlate })}`, { method: "POST" });
+          localStorage.setItem("parkwise.parkingSession", JSON.stringify(session));
+          document.getElementById("finish").classList.add("hidden");
+          renderSession();
+        } catch (error) { window.alert(error.message); }
+      }
+
+      document.getElementById("lookup-form").addEventListener("submit", loadSession);
+      document.getElementById("phone").value = localStorage.getItem("parkwise-phone") || "";
+      document.getElementById("license-plate").value = localStorage.getItem("parkwise-license-plate") || "";
+      if (document.getElementById("phone").value && document.getElementById("license-plate").value) loadSession();
+      window.setInterval(renderSession, 1000);
+      window.setInterval(() => { if (session) fetchSession().catch(() => {}); }, 30000);
+    </script>
+  </body>
+</html>

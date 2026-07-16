@@ -1,0 +1,51 @@
+# Project-specific documentation
+AGENTS.md
+PROJECT.MD
+UI.MD
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Environment and local data
+.env
+.env.*
+!.env.example
+backend/app.db
+*.sqlite3
+
+# Node.js and Vite
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Android and Gradle
+.gradle/
+build/
+mobile-app/.gradle/
+mobile-app/build/
+mobile-app/app/build/
+mobile-app/local.properties
+*.apk
+*.aab
+
+# IDE and operating system files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

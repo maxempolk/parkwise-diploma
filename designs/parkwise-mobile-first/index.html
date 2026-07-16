@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b3529" />
+    <title>Parkwise — Mobile-first UI concept</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./theme.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              forest: { 50: "#f1f6f3", 100: "#e2ede7", 600: "#1b644c", 800: "#124533", 900: "#0b3529", 950: "#07271f" },
+              canvas: "#ffffff",
+              ink: "#10241c",
+              lime: "#c9e7aa"
+            },
+            fontFamily: { sans: ["var(--font-sans)", "sans-serif"], display: ["var(--font-display)", "serif"] },
+            boxShadow: { float: "0 18px 50px rgba(16,36,28,.13)", soft: "0 10px 30px rgba(16,36,28,.08)" }
+          }
+        }
+      };
+    </script>
+    <style>
+      :root {
+        --font-display: "Fraunces";
+        --font-sans: "Inter";
+      }
+      body { background: #ffffff; }
+      :focus:not(:focus-visible) { outline: none; box-shadow: none; }
+      .parking-photo {
+        background-image: linear-gradient(180deg, rgba(7,39,31,.04), rgba(7,39,31,.18)), url("https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=1800&q=88");
+        background-position: center 58%;
+        background-size: cover;
+      }
+      .availability-dot { animation: availability-pulse 1.8s ease-in-out infinite; }
+      @keyframes availability-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+      @media (prefers-reduced-motion: reduce) { .availability-dot { animation: none; } }
+      @media (min-width: 768px) { .parking-photo { background-position: center 54%; } }
+    </style>
+  </head>
+  <body class="min-h-screen font-sans text-ink antialiased selection:bg-lime selection:text-forest-950">
+    <header class="relative z-30 bg-forest-950 text-white">
+      <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:h-20 sm:px-8 lg:px-12">
+        <a href="#" class="flex items-center gap-2.5 focus-visible:rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-400" aria-label="Parkwise home">
+          <span class="grid size-9 place-items-center rounded-xl border border-white/30 bg-white/10 text-lg font-bold text-lime">P</span>
+          <span class="font-display text-2xl font-semibold tracking-tight sm:text-3xl">Parkwise</span>
+        </a>
+        <a href="./my-parking.html" class="flex items-center gap-2 rounded-full px-2 py-2 text-sm font-semibold text-white/90 transition hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400">
+          <span class="hidden sm:inline">My parking</span>
+          <span class="grid size-9 place-items-center rounded-full border border-white/25" aria-hidden="true">
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="relative">
+        <div class="parking-photo h-52 sm:h-64 md:h-72 lg:h-80" role="img" aria-label="Calm modern private parking entrance"></div>
+
+        <div class="relative z-20 mx-auto -mt-8 max-w-7xl px-5 sm:-mt-10 sm:px-8 lg:px-12">
+          <aside class="mx-auto w-full max-w-md rounded-2xl bg-forest-800 px-5 py-4 text-white shadow-float" aria-label="12 open parking spots: 7 standard, 3 EV charging and 2 accessible">
+            <div class="flex items-center gap-4 sm:gap-6">
+              <div class="shrink-0">
+                <div class="flex items-center gap-2"><span class="availability-dot size-2 -translate-y-px rounded-full bg-emerald-300" aria-hidden="true"></span><span class="text-[11px] font-semibold uppercase leading-none tracking-wider text-white/60">Available now</span></div>
+                <p class="mt-1 flex items-baseline gap-1.5"><strong class="font-display text-4xl font-medium leading-none">12</strong><span class="text-xs text-white/60">spots</span></p>
+              </div>
+              <span class="h-12 w-px shrink-0 bg-white/15" aria-hidden="true"></span>
+              <dl class="grid min-w-0 flex-1 grid-cols-3 divide-x divide-white/10 text-center">
+                <div class="px-2"><dd class="text-lg font-semibold leading-none">7</dd><dt class="mt-2 text-[10px] font-medium text-white/55">Standard</dt></div>
+                <div class="px-2"><dd class="text-lg font-semibold leading-none">3</dd><dt class="mt-2 text-[10px] font-medium text-white/55">EV</dt></div>
+                <div class="px-2"><dd class="text-lg font-semibold leading-none">2</dd><dt class="mt-2 text-[10px] font-medium text-white/55">Accessible</dt></div>
+              </dl>
+            </div>
+          </aside>
+        </div>
+
+        <div class="mx-auto max-w-4xl px-5 pb-12 pt-10 text-center sm:px-8 sm:pb-16 sm:pt-14 lg:pb-20">
+          <p class="mb-4 text-xs font-bold uppercase tracking-[.2em] text-forest-600">Private parking, simplified</p>
+          <h1 class="font-display text-5xl font-medium leading-[.98] tracking-[-.04em] text-forest-950 sm:text-6xl md:text-7xl">Your spot is ready<br class="hidden sm:block" /> when you are.</h1>
+          <p class="mx-auto mt-5 max-w-lg text-base leading-7 text-slate-600 sm:text-lg">Arrive now or reserve ahead. We will choose the right spot and have its number ready for you.</p>
+
+          <div class="mx-auto mt-8 grid max-w-md gap-3 sm:grid-cols-2">
+            <a href="./park-now.html" class="inline-flex min-h-14 items-center justify-center gap-3 rounded-xl bg-forest-900 px-6 font-bold text-white shadow-soft transition hover:bg-forest-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-500">
+              <span class="grid size-7 place-items-center rounded-md border border-white/60 text-xs">P</span>
+              Park now
+            </a>
+            <a href="./book.html" class="inline-flex min-h-14 items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-6 font-bold text-forest-950 transition hover:border-slate-400 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-500">
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+              Book in advance
+            </a>
+          </div>
+
+          <a id="active-session" href="./active-session.html" class="mx-auto mt-7 inline-flex items-center gap-3 rounded-full px-4 py-2 text-sm font-semibold text-forest-800 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500">
+            <span class="grid size-8 place-items-center rounded-full bg-forest-100" aria-hidden="true">
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            </span>
+            Continue active parking <span class="text-slate-400">·</span> Spot 08
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-forest-900/10 px-5 py-6 text-center text-xs font-medium text-slate-500 sm:px-8">
+      Secure access <span class="mx-2 text-slate-300">•</span> Flexible parking <span class="mx-2 text-slate-300">•</span> Everything in one place
+    </footer>
+
+  </body>
+</html>

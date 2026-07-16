@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parkwise — Availability ticket reference</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./theme.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root { --forest: #124533; --forest-deep: #07271f; --lime: #d4ecb8; }
+      body { margin: 0; font-family: Inter, sans-serif; background: #f5f6f4; color: #10241c; }
+      .ticket {
+        position: relative;
+        overflow: hidden;
+        min-height: 144px;
+        color: white;
+        background: linear-gradient(145deg, #195840, var(--forest) 58%);
+        filter: drop-shadow(0 2px 0 #082d22) drop-shadow(0 10px 14px rgb(16 36 28 / 14%));
+        transform: perspective(900px) rotateX(.8deg) translateY(-1px);
+        transform-origin: center top;
+      }
+      .ticket {
+        -webkit-clip-path: url(#ticket-edge);
+        clip-path: url(#ticket-edge);
+      }
+      .ticket-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+      .ticket-content { display: grid; grid-template-columns: minmax(0, 1fr) 112px; min-height: 144px; }
+      .ticket-total { display: flex; flex-direction: column; justify-content: center; padding: 22px 24px 22px 32px; }
+      .ticket-total .eyebrow { display: flex; align-items: center; gap: 7px; color: rgb(255 255 255 / 60%); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+      .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); animation: pulse 1.8s ease-in-out infinite; }
+      .ticket-total strong { margin-top: 8px; font-family: Fraunces, serif; font-size: 58px; font-weight: 500; line-height: .8; }
+      .ticket-total small { margin-top: 7px; color: rgb(255 255 255 / 60%); font-size: 11px; }
+      .ticket-note { display: none; margin: 10px 0 0; color: rgb(255 255 255 / 42%); font-size: 10px; }
+      .updated { display: none; color: rgb(255 255 255 / 42%); font-size: 9px; font-style: normal; }
+      .ticket-breakdown { position: relative; display: grid; align-content: center; gap: 8px; padding: 22px 18px 22px 20px; background: rgb(7 39 31 / 26%); }
+      .ticket-breakdown::before { content: ""; position: absolute; top: 10px; bottom: 10px; left: 0; border-left: 2px dashed rgb(255 255 255 / 50%); }
+      .ticket-breakdown > div { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; }
+      .ticket-breakdown strong { font-size: 18px; }
+      .ticket-breakdown span { color: rgb(255 255 255 / 58%); font-size: 9px; font-weight: 700; letter-spacing: .08em; }
+      .barcode { height: 13px; margin-top: 6px; opacity: .42; background: repeating-linear-gradient(to right, white 0 2px, transparent 2px 4px, white 4px 5px, transparent 5px 8px, white 8px 11px, transparent 11px 13px); }
+      @keyframes pulse { 50% { opacity: .35; } }
+      @media (min-width: 640px) {
+        .ticket { min-height: 148px; }
+        .ticket-content { grid-template-columns: minmax(0, 1fr) 144px; min-height: 148px; }
+        .ticket-total { padding-left: 40px; }
+        .ticket-breakdown { padding-left: 24px; }
+        .ticket-note { display: block; }
+        .updated { display: block; margin-top: 5px; }
+      }
+      @media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
+    </style>
+  </head>
+  <body>
+    <svg class="ticket-defs" aria-hidden="true" focusable="false">
+      <defs>
+        <clipPath id="ticket-edge" clipPathUnits="objectBoundingBox">
+          <path d="M .045 0 H .955 Q .955 .12 1 .12 V .433 Q .967 .433 .967 .50 Q .967 .567 1 .567 V .88 Q .955 .88 .955 1 H .045 Q .045 .88 0 .88 V .567 Q .033 .567 .033 .50 Q .033 .433 0 .433 V .12 Q .045 .12 .045 0 Z" />
+        </clipPath>
+      </defs>
+    </svg>
+    <main class="mx-auto max-w-xl px-5 py-16 sm:py-24">
+      <a href="./index.html" class="text-sm font-semibold text-[#1b644c]">← Back to homepage</a>
+      <p class="mt-10 text-xs font-bold uppercase tracking-[.18em] text-[#1b644c]">Reference</p>
+      <h1 class="mt-3 font-[Fraunces] text-4xl font-medium tracking-tight text-[#07271f] sm:text-5xl">Availability as a ticket.</h1>
+      <p class="mt-4 max-w-lg leading-7 text-slate-600">The left section carries the total, while the perforation separates it from the breakdown by spot type.</p>
+
+      <section class="mt-10" aria-label="Current parking availability">
+        <div class="ticket">
+          <div class="ticket-content">
+            <div class="ticket-total">
+              <span class="eyebrow"><i class="dot"></i>Available now</span>
+              <em class="updated">Updated just now</em>
+              <strong>12</strong>
+              <small>open spots</small>
+              <p class="ticket-note">Your spot is assigned when you arrive.</p>
+            </div>
+            <dl class="ticket-breakdown">
+              <div><dt><strong>7</strong></dt><dd><span>STANDARD</span></dd></div>
+              <div><dt><strong>3</strong></dt><dd><span>EV</span></dd></div>
+              <div><dt><strong>2</strong></dt><dd><span>ACCESSIBLE</span></dd></div>
+              <i class="barcode" aria-hidden="true"></i>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <p class="mt-7 text-xs leading-5 text-slate-500">The saw edge is decorative only. The block remains informational and is not presented as a button.</p>
+    </main>
+  </body>
+</html>

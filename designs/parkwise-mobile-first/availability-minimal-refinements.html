@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parkwise — Refined minimal availability</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./theme.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              forest: { 50: "#f1f6f3", 100: "#e2ede7", 600: "#1b644c", 700: "#17543f", 800: "#124533", 900: "#0b3529", 950: "#07271f" }
+            },
+            fontFamily: { sans: ["Inter", "sans-serif"], display: ["Fraunces", "serif"] },
+            boxShadow: { soft: "0 14px 40px rgba(16,36,28,.10)" }
+          }
+        }
+      };
+    </script>
+    <style>
+      .availability-dot { animation: availability-pulse 1.8s ease-in-out infinite; }
+      @keyframes availability-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+      @media (prefers-reduced-motion: reduce) { .availability-dot { animation: none; } }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-100 font-sans text-slate-900 antialiased">
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto max-w-6xl px-5 py-8 sm:px-8">
+        <a href="./availability-variants.html" class="text-sm font-semibold text-forest-600 hover:text-forest-900">← All availability variants</a>
+        <h1 class="mt-4 font-display text-4xl font-medium tracking-tight text-forest-950 sm:text-5xl">Minimal availability, refined</h1>
+        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">Four focused directions based on variant 05. All show the same live state without behaving like buttons.</p>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-5 py-10 sm:px-8 lg:py-14">
+      <div class="grid gap-10 lg:grid-cols-2">
+        <section>
+          <div class="mb-3 flex items-start justify-between gap-4">
+            <div><h2 class="font-semibold">A · Balanced</h2><p class="mt-1 text-xs text-slate-500">Recommended — strongest clarity with little noise</p></div>
+            <span class="rounded-full bg-forest-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-forest-700">Best fit</span>
+          </div>
+          <aside class="rounded-2xl bg-forest-800 p-5 text-white shadow-soft" aria-label="12 open parking spots: 7 standard, 3 EV and 2 accessible">
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-2"><span class="size-2 rounded-full bg-emerald-300" aria-hidden="true"></span><span class="text-xs font-semibold uppercase tracking-[.14em] text-white/70">Available now</span></div>
+              <span class="text-[11px] text-white/50">Updated just now</span>
+            </div>
+            <div class="mt-5 flex items-end gap-2">
+              <strong class="font-display text-6xl font-medium leading-none">12</strong>
+              <span class="pb-1 text-sm font-medium text-white/70">open spots</span>
+            </div>
+            <dl class="mt-5 grid grid-cols-3 border-t border-white/15 pt-4">
+              <div><dt class="text-[11px] text-white/50">Standard</dt><dd class="mt-1 text-lg font-semibold">7</dd></div>
+              <div class="border-l border-white/15 pl-4"><dt class="text-[11px] text-white/50">EV</dt><dd class="mt-1 text-lg font-semibold">3</dd></div>
+              <div class="border-l border-white/15 pl-4"><dt class="text-[11px] text-white/50">Accessible</dt><dd class="mt-1 text-lg font-semibold">2</dd></div>
+            </dl>
+          </aside>
+        </section>
+
+        <section>
+          <div class="mb-3"><h2 class="font-semibold">B · Compact</h2><p class="mt-1 text-xs text-slate-500">For a short hero and smaller screens</p></div>
+          <aside class="rounded-2xl bg-forest-800 px-5 py-4 text-white shadow-soft" aria-label="12 open parking spots: 7 standard, 3 EV and 2 accessible">
+            <div class="flex items-center gap-4 sm:gap-6">
+              <div class="shrink-0">
+                <div class="flex items-center gap-2"><span class="availability-dot size-2 -translate-y-px rounded-full bg-emerald-300"></span><span class="text-[11px] font-semibold uppercase leading-none tracking-wider text-white/60">Available now</span></div>
+                <p class="mt-1 flex items-baseline gap-1.5"><strong class="font-display text-4xl font-medium leading-none">12</strong><span class="text-xs text-white/60">spots</span></p>
+              </div>
+              <span class="h-12 w-px shrink-0 bg-white/15" aria-hidden="true"></span>
+              <dl class="grid min-w-0 flex-1 grid-cols-3 divide-x divide-white/10 text-center">
+                <div class="px-2"><dd class="text-lg font-semibold leading-none">7</dd><dt class="mt-2 text-[10px] font-medium text-white/55">Standard</dt></div>
+                <div class="px-2"><dd class="text-lg font-semibold leading-none">3</dd><dt class="mt-2 text-[10px] font-medium text-white/55">EV</dt></div>
+                <div class="px-2"><dd class="text-lg font-semibold leading-none">2</dd><dt class="mt-2 text-[10px] font-medium text-white/55">Accessible</dt></div>
+              </dl>
+            </div>
+          </aside>
+        </section>
+
+        <section>
+          <div class="mb-3"><h2 class="font-semibold">C · Soft contrast</h2><p class="mt-1 text-xs text-slate-500">Does not compete with the primary dark button</p></div>
+          <aside class="rounded-2xl border border-forest-900/10 bg-forest-50 p-5 text-forest-950 shadow-soft" aria-label="12 open parking spots: 7 standard, 3 EV and 2 accessible">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[.14em] text-forest-700"><span class="size-2 rounded-full bg-emerald-500"></span>Available now</span>
+              <span class="text-[11px] text-slate-400">Live</span>
+            </div>
+            <p class="mt-4 flex items-end gap-2"><strong class="font-display text-6xl font-medium leading-none">12</strong><span class="pb-1 text-sm text-slate-500">open spots</span></p>
+            <dl class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-forest-900/10 pt-4 text-xs">
+              <div class="flex gap-2"><dt class="text-slate-500">Standard</dt><dd class="font-bold text-forest-800">7</dd></div>
+              <div class="flex gap-2"><dt class="text-slate-500">EV</dt><dd class="font-bold text-forest-800">3</dd></div>
+              <div class="flex gap-2"><dt class="text-slate-500">Accessible</dt><dd class="font-bold text-forest-800">2</dd></div>
+            </dl>
+          </aside>
+        </section>
+
+        <section>
+          <div class="mb-3"><h2 class="font-semibold">D · Editorial line</h2><p class="mt-1 text-xs text-slate-500">The quietest, least card-like direction</p></div>
+          <aside class="border-y border-forest-900/15 bg-white py-5" aria-label="12 open parking spots: 7 standard, 3 EV and 2 accessible">
+            <div class="flex items-center gap-5">
+              <div class="flex min-w-0 flex-1 items-baseline gap-2">
+                <strong class="font-display text-5xl font-medium leading-none text-forest-900">12</strong>
+                <div><p class="text-sm font-semibold text-forest-950">open spots</p><p class="mt-0.5 flex items-center gap-1.5 text-[11px] text-slate-400"><span class="size-1.5 rounded-full bg-emerald-500"></span>Available now</p></div>
+              </div>
+              <dl class="grid grid-cols-3 gap-4 text-center">
+                <div><dd class="font-semibold text-forest-900">7</dd><dt class="text-[9px] text-slate-400">Standard</dt></div>
+                <div><dd class="font-semibold text-forest-900">3</dd><dt class="text-[9px] text-slate-400">EV</dt></div>
+                <div><dd class="font-semibold text-forest-900">2</dd><dt class="text-[9px] text-slate-400">Accessible</dt></div>
+              </dl>
+            </div>
+          </aside>
+        </section>
+      </div>
+
+      <section class="mt-14 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
+        <h2 class="font-display text-2xl font-medium text-forest-950">How they behave in the homepage</h2>
+        <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-xl bg-slate-50 p-4"><strong class="text-sm">A · Balanced</strong><p class="mt-2 text-xs leading-5 text-slate-500">Best standalone widget. Clear hierarchy and full context.</p></div>
+          <div class="rounded-xl bg-slate-50 p-4"><strong class="text-sm">B · Compact</strong><p class="mt-2 text-xs leading-5 text-slate-500">Keeps more space for the headline and actions.</p></div>
+          <div class="rounded-xl bg-slate-50 p-4"><strong class="text-sm">C · Soft contrast</strong><p class="mt-2 text-xs leading-5 text-slate-500">Lets the dark Park now button remain the strongest action.</p></div>
+          <div class="rounded-xl bg-slate-50 p-4"><strong class="text-sm">D · Editorial line</strong><p class="mt-2 text-xs leading-5 text-slate-500">Feels integrated into the page rather than floating above it.</p></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

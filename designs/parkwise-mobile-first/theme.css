@@ -1,0 +1,19 @@
+:root {
+  --font-display: "Fraunces";
+  --font-sans: "Inter";
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { max-width: 100%; overflow-x: clip; scroll-behavior: smooth; }
+body { max-width: 100%; overflow-x: clip; background: #fff; }
+main, header, section, aside, article, form { min-width: 0; }
+img, svg, video, canvas { max-width: 100%; }
+:focus:not(:focus-visible) { outline: none; box-shadow: none; }
+input[type="date"], input[type="time"] { color-scheme: light; }
+
+.availability-dot { animation: availability-pulse 1.8s ease-in-out infinite; }
+@keyframes availability-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .availability-dot { animation: none; }
+}
