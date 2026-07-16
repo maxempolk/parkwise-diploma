@@ -1,5 +1,7 @@
 # Parkwise
 
+[Українська версія документації](docs/uk/README.md)
+
 Parkwise is an educational MVP for managing a private parking facility. Guests
 can start parking immediately or book in advance, while administrators configure
 spaces and tariffs and manage reservations and parking sessions.
