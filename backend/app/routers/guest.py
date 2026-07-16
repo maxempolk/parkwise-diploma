@@ -29,6 +29,7 @@ from ..services import (
     ensure_vehicle_has_no_active_session,
     ensure_vehicle_has_no_overlapping_reservation,
     ensure_capacity,
+    ensure_extension_allowed,
     get_session,
     require_tariff,
     refresh_statuses,
@@ -163,9 +164,10 @@ def extend_session(session_id: int, data: ExtensionRequest, phone: str, license_
     if item.phone != phone or item.license_plate != license_plate.upper():
         raise api_error(403, "identity_mismatch", "The guest details do not match this session.")
     new_end = as_utc(data.expected_end_at)
-    if item.status == SessionStatus.COMPLETED or new_end <= as_utc(item.expected_end_at):
-        raise api_error(422, "invalid_extension", "The new end time must extend an active session.")
+    ensure_extension_allowed(item, new_end)
     ensure_capacity(db, item.spot.spot_type, as_utc(item.expected_end_at), new_end, exclude_session_id=item.id)
+    if item.reservation_id is None:
+        item.extension_count += 1
     item.expected_end_at = new_end; item.status = SessionStatus.ACTIVE
     db.commit()
     return get_session(db, item.id)
@@ -186,4 +188,7 @@ def estimate_session_cost(session_id: int, phone: str, license_plate: str, db: S
     if item.phone != phone or item.license_plate != license_plate.upper():
         raise api_error(403, "identity_mismatch", "The guest details do not match this session.")
     end = item.ended_at if item.status == SessionStatus.COMPLETED and item.ended_at else utc_now()
-    return SessionEstimateRead(estimated_cost=calculate_cost(db, item, end))
+    return SessionEstimateRead(
+        estimated_cost=calculate_cost(db, item, end),
+        projected_total_cost=calculate_cost(db, item, as_utc(item.expected_end_at)),
+    )

@@ -27,7 +27,7 @@ from ..schemas import (
     TariffBulkUpsert,
     TariffUpsert,
 )
-from ..services import QUICK_LIMIT, as_utc, assign_spot, complete_session, count_available_capacity, ensure_capacity, ensure_spot_can_leave_capacity, ensure_vehicle_has_no_active_session, ensure_vehicle_has_no_overlapping_reservation, get_session, refresh_statuses, require_tariff, utc_now, validate_period
+from ..services import QUICK_LIMIT, as_utc, assign_spot, complete_session, count_available_capacity, ensure_capacity, ensure_extension_allowed, ensure_spot_can_leave_capacity, ensure_vehicle_has_no_active_session, ensure_vehicle_has_no_overlapping_reservation, get_session, refresh_statuses, require_tariff, utc_now, validate_period
 
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
@@ -292,9 +292,10 @@ def admin_extend_session(session_id: int, data: ExtensionRequest, db: Session = 
     refresh_statuses(db)
     item = get_session(db, session_id)
     new_end = as_utc(data.expected_end_at)
-    if item.status == SessionStatus.COMPLETED or new_end <= as_utc(item.expected_end_at):
-        raise api_error(422, "invalid_extension", "The new end time must extend an active session.")
+    ensure_extension_allowed(item, new_end)
     ensure_capacity(db, item.spot.spot_type, as_utc(item.expected_end_at), new_end, exclude_session_id=item.id)
+    if item.reservation_id is None:
+        item.extension_count += 1
     item.expected_end_at = new_end
     item.status = SessionStatus.ACTIVE
     db.commit()

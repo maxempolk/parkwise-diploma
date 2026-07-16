@@ -19,6 +19,8 @@ from .models import (
 BUFFER = timedelta(minutes=10)
 NO_SHOW_GRACE = timedelta(minutes=30)
 QUICK_LIMIT = timedelta(hours=4)
+QUICK_MAX_DURATION = timedelta(hours=6)
+QUICK_MAX_EXTENSION = timedelta(hours=2)
 
 
 def utc_now() -> datetime:
@@ -223,6 +225,23 @@ def calculate_cost(db: Session, session: ParkingSession, ended_at: datetime) -> 
         billable_seconds = max(billable_seconds, reserved_seconds)
     blocks = max(1, int((Decimal(str(billable_seconds)) / Decimal("1800")).to_integral_value(rounding=ROUND_CEILING)))
     return (Decimal(blocks) * rate).quantize(Decimal("0.01"))
+
+
+def ensure_extension_allowed(session: ParkingSession, new_end: datetime) -> None:
+    """Apply the stricter extension policy for quick-parking sessions."""
+    current_end = as_utc(session.expected_end_at)
+    if session.status == SessionStatus.COMPLETED or new_end <= current_end:
+        raise api_error(422, "invalid_extension", "The new end time must extend an active session.")
+    if session.reservation_id is not None:
+        return
+    if session.status != SessionStatus.ACTIVE:
+        raise api_error(409, "quick_extension_closed", "Quick parking can only be extended before its expected end time.")
+    if session.extension_count >= 1:
+        raise api_error(409, "quick_extension_used", "Quick parking can only be extended once.")
+    if new_end - current_end > QUICK_MAX_EXTENSION:
+        raise api_error(422, "quick_extension_too_long", "Quick parking can be extended by up to 2 hours.")
+    if new_end > as_utc(session.started_at) + QUICK_MAX_DURATION:
+        raise api_error(422, "quick_duration_limit", "Quick parking cannot exceed 6 hours in total.")
 
 
 def get_session(db: Session, session_id: int) -> ParkingSession:

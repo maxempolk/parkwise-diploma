@@ -124,6 +124,7 @@ class SessionRead(ApiModel):
     expected_end_at: datetime
     ended_at: datetime | None
     status: SessionStatus
+    extension_count: int
     rate_per_30_minutes: Decimal | None
     total_cost: Decimal | None
     spot: SpotRead
@@ -138,6 +139,7 @@ class SessionRead(ApiModel):
 
 class SessionEstimateRead(BaseModel):
     estimated_cost: Decimal
+    projected_total_cost: Decimal
 
 
 class GuestOverview(BaseModel):

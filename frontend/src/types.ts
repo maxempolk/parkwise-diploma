@@ -29,6 +29,7 @@ export interface ParkingSession {
   expected_end_at: string;
   ended_at: string | null;
   status: string;
+  extension_count: number;
   rate_per_30_minutes: string | null;
   total_cost: string | null;
   spot: Spot;
@@ -54,4 +55,5 @@ export interface Tariff {
 
 export interface SessionEstimate {
   estimated_cost: string;
+  projected_total_cost: string;
 }

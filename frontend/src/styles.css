@@ -183,6 +183,18 @@ select { appearance: none; -webkit-appearance: none; padding-right: 42px; backgr
 .active-stats > div + div { border-left: 1px solid rgb(255 255 255 / 10%); }
 .active-stats small { display: block; color: rgb(255 255 255 / 42%); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
 .active-stats strong { display: block; margin-top: 7px; font-size: 20px; }
+.active-cost-note, .active-extension-limit { max-width: 450px; margin: 12px auto 0; color: rgb(255 255 255 / 62%); font-size: 12px; line-height: 1.5; }
+.active-extension-limit { color: #d4ecb8; font-weight: 700; }
+.extension-modal-backdrop { position: fixed; z-index: 60; inset: 0; display: grid; place-items: center; padding: 16px; overflow: auto; background: rgb(7 39 31 / 58%); animation: overlay-fade .18s ease-out both; }
+.extension-modal { width: min(100%, 440px); max-height: calc(100dvh - 32px); overflow: auto; padding: 22px; border: 1px solid #e1e7e3; border-radius: 20px; color: #10241c; background: white; box-shadow: 0 18px 48px rgb(7 39 31 / 28%); animation: mobile-sheet-enter .22s cubic-bezier(.22, .8, .24, 1) both; }
+.extension-modal-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.extension-modal h2 { margin: 3px 0 0; font-family: Fraunces, serif; font-size: 30px; font-weight: 500; }
+.extension-modal > p { margin: 16px 0 0; color: #647069; font-size: 13px; line-height: 1.5; }
+.extension-modal-close { display: grid; width: 38px; min-width: 38px; height: 38px; place-items: center; border: 1px solid #e1e7e3; border-radius: 50%; color: #52625c; background: #f8fbf9; font-size: 24px; line-height: 1; cursor: pointer; }
+.extension-modal-close:hover { color: #10241c; background: #eef5f1; }
+.extension-modal .duration-picker { margin-top: 18px; }
+.extension-modal .custom-duration { margin-top: 14px; }
+.extension-modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
 .active-actions { display: grid; max-width: 450px; gap: 10px; margin: 28px auto 0; }
 .active-history-link { display: inline-flex; margin-top: 20px; color: rgb(255 255 255 / 58%); font-size: 12px; font-weight: 700; text-decoration: none; }
 .active-history-link:hover { color: white; }

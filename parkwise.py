@@ -237,7 +237,12 @@ def launch_mobile(environment: dict[str, str]) -> None:
     else:
         avd = selected_avd(tools.emulator)
         print(f"Starting Android emulator: {avd}")
-        subprocess.Popen([str(tools.emulator), "-avd", avd], cwd=ROOT, env=environment)
+        subprocess.Popen(
+            [str(tools.emulator), "-avd", avd],
+            cwd=ROOT,
+            env=environment,
+            start_new_session=True,
+        )
         wait_for_emulator(tools.adb)
 
     run_checked(gradle_command(), cwd=MOBILE, environment=environment)

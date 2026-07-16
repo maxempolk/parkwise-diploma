@@ -49,6 +49,14 @@ def test_quick_parking_complete_workflow(client, admin_headers):
     assert extended.status_code == 200
     assert datetime.fromisoformat(extended.json()["expected_end_at"]) > original_end
     assert extended.json()["status"] == "active"
+    assert extended.json()["extension_count"] == 1
+
+    repeated_extension = client.post(
+        f"/api/sessions/{session['id']}/extend?phone=%2B15550100&license_plate=ABC123",
+        json={"expected_end_at": (original_end + timedelta(hours=1)).isoformat()},
+    )
+    assert repeated_extension.status_code == 409
+    assert repeated_extension.json()["detail"]["code"] == "quick_extension_used"
 
     overview = client.get("/api/me?phone=%2B15550100&license_plate=ABC123")
     assert overview.status_code == 200
@@ -175,6 +183,27 @@ def test_guest_tariffs_and_session_estimate_use_configured_price(client, admin_h
     estimate = client.get(f"/api/sessions/{started['id']}/estimate?phone=%2B15550100&license_plate=ABC123")
     assert estimate.status_code == 200
     assert estimate.json()["estimated_cost"] == "7.00"
+    assert estimate.json()["projected_total_cost"] == "56.00"
+
+
+def test_quick_parking_extension_is_limited_to_one_extension_of_two_hours(client, admin_headers):
+    configure(client, admin_headers)
+    started = client.post("/api/parking/quick", json={"phone": "+15550100", "license_plate": "ABC123", "spot_type": "standard"}).json()
+    original_end = datetime.fromisoformat(started["expected_end_at"])
+
+    too_long = client.post(
+        f"/api/sessions/{started['id']}/extend?phone=%2B15550100&license_plate=ABC123",
+        json={"expected_end_at": (original_end + timedelta(hours=2, minutes=30)).isoformat()},
+    )
+    assert too_long.status_code == 422
+    assert too_long.json()["detail"]["code"] == "quick_extension_too_long"
+
+    allowed = client.post(
+        f"/api/sessions/{started['id']}/extend?phone=%2B15550100&license_plate=ABC123",
+        json={"expected_end_at": (original_end + timedelta(hours=2)).isoformat()},
+    )
+    assert allowed.status_code == 200
+    assert datetime.fromisoformat(allowed.json()["expected_end_at"]) == original_end + timedelta(hours=2)
 
 
 def test_session_keeps_its_starting_tariff_when_the_admin_changes_prices(client, admin_headers):
