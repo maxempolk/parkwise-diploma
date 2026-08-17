@@ -1,5 +1,7 @@
 # Parkwise
 
+[![CI](https://github.com/maxempolk/parkwise-diploma/actions/workflows/ci.yml/badge.svg)](https://github.com/maxempolk/parkwise-diploma/actions/workflows/ci.yml)
+
 [Українська версія документації](docs/uk/README.md)
 
 Parkwise is an educational MVP for managing a private parking facility. Guests

@@ -1,5 +1,7 @@
 # Parkwise
 
+[![CI](https://github.com/maxempolk/parkwise-diploma/actions/workflows/ci.yml/badge.svg)](https://github.com/maxempolk/parkwise-diploma/actions/workflows/ci.yml)
+
 Parkwise — навчальний MVP для керування приватним паркуванням. Гість може
 розпочати паркування одразу або забронювати місце заздалегідь. Адміністратор
 налаштовує місця й тарифи, керує бронюваннями та активними сесіями.
