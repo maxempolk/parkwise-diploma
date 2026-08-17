@@ -13,7 +13,6 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parent
 BACKEND = ROOT / "backend"
 FRONTEND = ROOT / "frontend"
@@ -68,11 +67,13 @@ def android_sdk_roots() -> list[Path]:
 
     system = platform.system()
     if system == "Darwin":
-        roots.extend([
-            Path.home() / "Library/Android/sdk",
-            Path("/opt/homebrew/share/android-commandlinetools"),
-            Path("/usr/local/share/android-commandlinetools"),
-        ])
+        roots.extend(
+            [
+                Path.home() / "Library/Android/sdk",
+                Path("/opt/homebrew/share/android-commandlinetools"),
+                Path("/usr/local/share/android-commandlinetools"),
+            ]
+        )
     elif system == "Windows":
         local_app_data = os.environ.get("LOCALAPPDATA")
         if local_app_data:
@@ -90,19 +91,24 @@ def resolve_android_tools() -> AndroidTools:
         return AndroidTools(Path(adb_from_path), Path(emulator_from_path))
 
     for sdk_root in android_sdk_roots():
-        adb = find_existing([
-            sdk_root / "platform-tools" / executable_name("adb"),
-            sdk_root / executable_name("adb"),
-        ])
-        emulator = find_existing([
-            sdk_root / "emulator" / executable_name("emulator"),
-            sdk_root / executable_name("emulator"),
-        ])
+        adb = find_existing(
+            [
+                sdk_root / "platform-tools" / executable_name("adb"),
+                sdk_root / executable_name("adb"),
+            ]
+        )
+        emulator = find_existing(
+            [
+                sdk_root / "emulator" / executable_name("emulator"),
+                sdk_root / executable_name("emulator"),
+            ]
+        )
         if adb and emulator:
             return AndroidTools(adb, emulator)
 
     raise LauncherError(
-        "Android SDK tools were not found. Set ANDROID_SDK_ROOT or install Android Studio with Android Emulator and Platform Tools."
+        "Android SDK tools were not found. Set ANDROID_SDK_ROOT or install Android Studio "
+        "with Android Emulator and Platform Tools."
     )
 
 
@@ -163,12 +169,21 @@ def build_frontend(environment: dict[str, str]) -> None:
     run_checked([npm_command(), "run", "build"], cwd=FRONTEND, environment=environment)
 
 
+def migrate_backend(environment: dict[str, str]) -> None:
+    run_checked(
+        [str(virtualenv_python()), "-m", "alembic", "upgrade", "head"],
+        cwd=BACKEND,
+        environment=environment,
+    )
+
+
 def start_backend(environment: dict[str, str]) -> subprocess.Popen[bytes] | None:
     if port_is_open(BACKEND_PORT):
         print(f"Backend is already available at http://localhost:{BACKEND_PORT}.")
         return None
 
     build_frontend(environment)
+    migrate_backend(environment)
     process = spawn(
         [str(virtualenv_python()), "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", str(BACKEND_PORT)],
         cwd=BACKEND,
@@ -214,7 +229,9 @@ def wait_for_emulator(adb: Path, timeout_seconds: int = 120) -> None:
     subprocess.run([str(adb), "wait-for-device"], check=True)
     deadline = time.monotonic() + timeout_seconds
     while time.monotonic() < deadline:
-        result = subprocess.run([str(adb), "shell", "getprop", "sys.boot_completed"], check=True, capture_output=True, text=True)
+        result = subprocess.run(
+            [str(adb), "shell", "getprop", "sys.boot_completed"], check=True, capture_output=True, text=True
+        )
         if result.stdout.strip() == "1":
             return
         time.sleep(1)
@@ -259,7 +276,9 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Launch Parkwise services and the Android application.")
     parser.add_argument("--backend", action="store_true", help="Build the web client and start FastAPI on port 8000.")
     parser.add_argument("--frontend", action="store_true", help="Start the Vite development server on port 5173.")
-    parser.add_argument("--mobile", action="store_true", help="Build, install and open the Android application in an emulator.")
+    parser.add_argument(
+        "--mobile", action="store_true", help="Build, install and open the Android application in an emulator."
+    )
     return parser.parse_args()
 
 

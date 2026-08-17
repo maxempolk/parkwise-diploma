@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -79,6 +79,7 @@ class TariffUpsert(BaseModel):
 class TariffBulkUpsert(BaseModel):
     tariffs: list[TariffUpsert] = Field(min_length=3, max_length=3)
 
+
 class LoginRequest(BaseModel):
     username: str
     password: str
@@ -111,7 +112,7 @@ class ReservationRead(ApiModel):
     @field_validator("starts_at", "ends_at", mode="after")
     @classmethod
     def serialize_as_utc(cls, value: datetime) -> datetime:
-        return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
+        return value.replace(tzinfo=UTC) if value.tzinfo is None else value.astimezone(UTC)
 
 
 class SessionRead(ApiModel):
@@ -134,7 +135,7 @@ class SessionRead(ApiModel):
     def serialize_as_utc(cls, value: datetime | None) -> datetime | None:
         if value is None:
             return None
-        return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
+        return value.replace(tzinfo=UTC) if value.tzinfo is None else value.astimezone(UTC)
 
 
 class SessionEstimateRead(BaseModel):

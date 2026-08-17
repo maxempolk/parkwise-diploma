@@ -1,6 +1,6 @@
-from sqlalchemy import create_engine
 from collections.abc import Generator
 
+from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from .config import settings
@@ -21,4 +21,3 @@ def get_db() -> Generator[Session, None, None]:
         yield db
     finally:
         db.close()
-

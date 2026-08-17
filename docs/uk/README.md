@@ -1,5 +1,7 @@
 # Parkwise
 
+[![CI](https://github.com/maxempolk/parkwise-diploma/actions/workflows/ci.yml/badge.svg)](https://github.com/maxempolk/parkwise-diploma/actions/workflows/ci.yml)
+
 Parkwise — навчальний MVP для керування приватним паркуванням. Гість може
 розпочати паркування одразу або забронювати місце заздалегідь. Адміністратор
 налаштовує місця й тарифи, керує бронюваннями та активними сесіями.
@@ -18,16 +20,17 @@ Parkwise — навчальний MVP для керування приватни
 
 ## Швидкий запуск
 
-Потрібні Python 3.11+, Node.js LTS і npm.
+Потрібні Python 3.11+, Node.js 20.19+ і npm.
 
 ```bash
+git clone https://github.com/maxempolk/parkwise-diploma.git
+cd parkwise-diploma
+
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r backend/requirements.txt
+python -m pip install -r backend/requirements.txt
 
-cd frontend
-npm install
-cd ..
+npm --prefix frontend ci
 
 python run_mobile_backend.py
 ```
@@ -40,6 +43,17 @@ python run_mobile_backend.py
 ```text
 Username: admin
 Password: admin
+```
+
+Ці дані призначені лише для локальної розробки. Перед будь-яким зовнішнім
+розгортанням створіть `backend/.env` на основі `backend/.env.example` і замініть
+пароль адміністратора та `JWT_SECRET`.
+
+Безпечний хеш нового пароля можна згенерувати без запису пароля в історію shell:
+
+```bash
+cd backend
+../.venv/bin/python -m app.passwords
 ```
 
 ## Android

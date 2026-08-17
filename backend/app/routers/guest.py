@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
@@ -8,8 +8,8 @@ from ..database import get_db
 from ..errors import api_error
 from ..models import ParkingSession, Reservation, ReservationStatus, SessionStatus, Tariff
 from ..schemas import (
-    ExtensionRequest,
     AvailabilityRead,
+    ExtensionRequest,
     GuestOverview,
     QuickParkingCreate,
     ReservationCreate,
@@ -23,20 +23,19 @@ from ..services import (
     QUICK_LIMIT,
     as_utc,
     assign_spot,
-    count_available_capacity,
-    complete_session,
     calculate_cost,
-    ensure_vehicle_has_no_active_session,
-    ensure_vehicle_has_no_overlapping_reservation,
+    complete_session,
+    count_available_capacity,
     ensure_capacity,
     ensure_extension_allowed,
+    ensure_vehicle_has_no_active_session,
+    ensure_vehicle_has_no_overlapping_reservation,
     get_session,
-    require_tariff,
     refresh_statuses,
+    require_tariff,
     utc_now,
     validate_period,
 )
-
 
 router = APIRouter(prefix="/api", tags=["guest"])
 
@@ -52,13 +51,19 @@ def get_reservation(db: Session, reservation_id: int) -> Reservation:
 def start_quick_parking(data: QuickParkingCreate, db: Session = Depends(get_db)):
     refresh_statuses(db)
     ensure_vehicle_has_no_active_session(db, data.license_plate)
-    now, expected_end = utc_now(), utc_now() + QUICK_LIMIT
+    now = utc_now()
+    expected_end = now + QUICK_LIMIT
     ensure_capacity(db, data.spot_type, now, expected_end)
     spot = assign_spot(db, data.spot_type, now, expected_end)
     rate = require_tariff(db, data.spot_type).price_per_30_minutes
     item = ParkingSession(
-        spot_id=spot.id, phone=data.phone, license_plate=data.license_plate,
-        started_at=now, expected_end_at=expected_end, status=SessionStatus.ACTIVE, rate_per_30_minutes=rate,
+        spot_id=spot.id,
+        phone=data.phone,
+        license_plate=data.license_plate,
+        started_at=now,
+        expected_end_at=expected_end,
+        status=SessionStatus.ACTIVE,
+        rate_per_30_minutes=rate,
     )
     db.add(item)
     db.commit()
@@ -80,11 +85,22 @@ def create_reservation(data: ReservationCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/me", response_model=GuestOverview)
-def guest_overview(phone: str = Query(min_length=5), license_plate: str = Query(min_length=2), db: Session = Depends(get_db)):
+def guest_overview(
+    phone: str = Query(min_length=5), license_plate: str = Query(min_length=2), db: Session = Depends(get_db)
+):
     refresh_statuses(db)
     plate = license_plate.strip().upper()
-    reservations = db.scalars(select(Reservation).where(Reservation.phone == phone.strip(), Reservation.license_plate == plate).order_by(Reservation.starts_at.desc())).all()
-    sessions = db.scalars(select(ParkingSession).options(joinedload(ParkingSession.spot)).where(ParkingSession.phone == phone.strip(), ParkingSession.license_plate == plate).order_by(ParkingSession.started_at.desc())).all()
+    reservations = db.scalars(
+        select(Reservation)
+        .where(Reservation.phone == phone.strip(), Reservation.license_plate == plate)
+        .order_by(Reservation.starts_at.desc())
+    ).all()
+    sessions = db.scalars(
+        select(ParkingSession)
+        .options(joinedload(ParkingSession.spot))
+        .where(ParkingSession.phone == phone.strip(), ParkingSession.license_plate == plate)
+        .order_by(ParkingSession.started_at.desc())
+    ).all()
     return GuestOverview(reservations=reservations, sessions=sessions)
 
 
@@ -112,7 +128,9 @@ def guest_tariffs(db: Session = Depends(get_db)):
 
 
 @router.put("/reservations/{reservation_id}", response_model=ReservationRead)
-def update_reservation(reservation_id: int, data: ReservationUpdate, phone: str, license_plate: str, db: Session = Depends(get_db)):
+def update_reservation(
+    reservation_id: int, data: ReservationUpdate, phone: str, license_plate: str, db: Session = Depends(get_db)
+):
     refresh_statuses(db)
     item = get_reservation(db, reservation_id)
     if item.phone != phone or item.license_plate != license_plate.upper():
@@ -123,7 +141,8 @@ def update_reservation(reservation_id: int, data: ReservationUpdate, phone: str,
     ensure_vehicle_has_no_overlapping_reservation(db, item.license_plate, starts_at, ends_at, item.id)
     ensure_capacity(db, data.spot_type, starts_at, ends_at, item.id)
     item.spot_type, item.starts_at, item.ends_at = data.spot_type, starts_at, ends_at
-    db.commit(); db.refresh(item)
+    db.commit()
+    db.refresh(item)
     return item
 
 
@@ -135,7 +154,8 @@ def cancel_reservation(reservation_id: int, phone: str, license_plate: str, db: 
     if item.status != ReservationStatus.CONFIRMED or as_utc(item.starts_at) <= utc_now():
         raise api_error(409, "reservation_not_cancellable", "Only future confirmed reservations can be cancelled.")
     item.status = ReservationStatus.CANCELLED
-    db.commit(); db.refresh(item)
+    db.commit()
+    db.refresh(item)
     return item
 
 
@@ -151,14 +171,25 @@ def check_in(reservation_id: int, phone: str, license_plate: str, db: Session = 
     ensure_vehicle_has_no_active_session(db, item.license_plate)
     spot = assign_spot(db, item.spot_type, now, as_utc(item.ends_at))
     rate = require_tariff(db, item.spot_type).price_per_30_minutes
-    session = ParkingSession(reservation_id=item.id, spot_id=spot.id, phone=item.phone, license_plate=item.license_plate, started_at=now, expected_end_at=item.ends_at, rate_per_30_minutes=rate)
+    session = ParkingSession(
+        reservation_id=item.id,
+        spot_id=spot.id,
+        phone=item.phone,
+        license_plate=item.license_plate,
+        started_at=now,
+        expected_end_at=item.ends_at,
+        rate_per_30_minutes=rate,
+    )
     item.status = ReservationStatus.CHECKED_IN
-    db.add(session); db.commit()
+    db.add(session)
+    db.commit()
     return get_session(db, session.id)
 
 
 @router.post("/sessions/{session_id}/extend", response_model=SessionRead)
-def extend_session(session_id: int, data: ExtensionRequest, phone: str, license_plate: str, db: Session = Depends(get_db)):
+def extend_session(
+    session_id: int, data: ExtensionRequest, phone: str, license_plate: str, db: Session = Depends(get_db)
+):
     refresh_statuses(db)
     item = get_session(db, session_id)
     if item.phone != phone or item.license_plate != license_plate.upper():
@@ -168,7 +199,8 @@ def extend_session(session_id: int, data: ExtensionRequest, phone: str, license_
     ensure_capacity(db, item.spot.spot_type, as_utc(item.expected_end_at), new_end, exclude_session_id=item.id)
     if item.reservation_id is None:
         item.extension_count += 1
-    item.expected_end_at = new_end; item.status = SessionStatus.ACTIVE
+    item.expected_end_at = new_end
+    item.status = SessionStatus.ACTIVE
     db.commit()
     return get_session(db, item.id)
 
