@@ -37,25 +37,22 @@ FastAPI backend.
 - `mobile-app/` — Kotlin Android project.
 - `parkwise.py` — cross-platform development launcher.
 - `run_mobile_backend.py` — starts the backend and built web client together.
-- `PROJECT.MD` — project requirements.
-- `UI.MD` — UI requirements.
+- `designs/parkwise-mobile-first/` — early interface prototypes.
 - `docs/uk/README.md` — Ukrainian-language documentation.
 
 ## Quick start on macOS and Linux
 
-Requirements: Python 3.11+, Node.js LTS and npm.
+Requirements: Python 3.11+, Node.js 20.19+ and npm.
 
 ```bash
-git clone <repository-url>
-cd parking-booking
+git clone https://github.com/maxempolk/parkwise-diploma.git
+cd parkwise-diploma
 
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r backend/requirements.txt
+python -m pip install -r backend/requirements.txt
 
-cd frontend
-npm install
-cd ..
+npm --prefix frontend ci
 
 python run_mobile_backend.py
 ```
@@ -67,8 +64,8 @@ After startup:
 - API health check: `http://localhost:8000/api/health`;
 - API documentation: `http://localhost:8000/docs`.
 
-`run_mobile_backend.py` builds the React client first and then starts FastAPI on
-port `8000`.
+`run_mobile_backend.py` builds the React client, applies all Alembic migrations
+and then starts FastAPI on port `8000`.
 
 ## Cross-platform launcher
 
@@ -100,16 +97,14 @@ outside its default location.
 
 ## Quick start on Windows
 
-Install Python 3.11+ and Node.js LTS, then open PowerShell in the project root.
+Install Python 3.11+ and Node.js 20.19+, then open PowerShell in the project root.
 
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r backend\requirements.txt
+python -m pip install -r backend\requirements.txt
 
-cd frontend
-npm install
-cd ..
+npm --prefix frontend ci
 
 python run_mobile_backend.py
 ```
@@ -122,8 +117,8 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 ## Database configuration
 
-The default local database is `backend/app.db`. To create a clean database,
-apply migrations before the first run:
+The default local database is `backend/app.db`. Both launchers apply migrations
+automatically. To apply them manually:
 
 ```bash
 source .venv/bin/activate
@@ -150,8 +145,10 @@ Username: admin
 Password: admin
 ```
 
-For a different password, change `ADMIN_PASSWORD_HASH` and `JWT_SECRET` in
-`backend/.env`. The password is stored as a SHA-256 hash.
+These credentials are for local development only. Never expose a deployment
+that uses the default password or secret. Copy `backend/.env.example` to
+`backend/.env`, then set a unique `ADMIN_PASSWORD_HASH` and `JWT_SECRET` before
+running the application outside your own computer.
 
 ## Android application
 
@@ -208,6 +205,13 @@ Run the frontend test and production build:
 cd frontend
 npm test -- --run
 npm run build
+```
+
+Run the Android build with JDK 17 and Android SDK Platform 34 installed:
+
+```bash
+cd mobile-app
+./gradlew test assembleDebug
 ```
 
 ## Troubleshooting

@@ -52,7 +52,8 @@ def get_reservation(db: Session, reservation_id: int) -> Reservation:
 def start_quick_parking(data: QuickParkingCreate, db: Session = Depends(get_db)):
     refresh_statuses(db)
     ensure_vehicle_has_no_active_session(db, data.license_plate)
-    now, expected_end = utc_now(), utc_now() + QUICK_LIMIT
+    now = utc_now()
+    expected_end = now + QUICK_LIMIT
     ensure_capacity(db, data.spot_type, now, expected_end)
     spot = assign_spot(db, data.spot_type, now, expected_end)
     rate = require_tariff(db, data.spot_type).price_per_30_minutes

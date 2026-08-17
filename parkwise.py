@@ -163,12 +163,21 @@ def build_frontend(environment: dict[str, str]) -> None:
     run_checked([npm_command(), "run", "build"], cwd=FRONTEND, environment=environment)
 
 
+def migrate_backend(environment: dict[str, str]) -> None:
+    run_checked(
+        [str(virtualenv_python()), "-m", "alembic", "upgrade", "head"],
+        cwd=BACKEND,
+        environment=environment,
+    )
+
+
 def start_backend(environment: dict[str, str]) -> subprocess.Popen[bytes] | None:
     if port_is_open(BACKEND_PORT):
         print(f"Backend is already available at http://localhost:{BACKEND_PORT}.")
         return None
 
     build_frontend(environment)
+    migrate_backend(environment)
     process = spawn(
         [str(virtualenv_python()), "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", str(BACKEND_PORT)],
         cwd=BACKEND,

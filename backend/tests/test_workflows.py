@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
 from app.models import ParkingSession, ParkingSpot, Reservation, ReservationStatus, SessionStatus, SpotType, Tariff
-from app.services import calculate_cost, refresh_statuses
+from app.services import QUICK_LIMIT, calculate_cost, refresh_statuses
 
 
 def next_slot(hours: int = 2) -> datetime:
@@ -37,6 +37,7 @@ def test_quick_parking_complete_workflow(client, admin_headers):
     assert session["license_plate"] == "ABC123"
     assert datetime.fromisoformat(session["started_at"]).tzinfo is not None
     assert datetime.fromisoformat(session["expected_end_at"]).tzinfo is not None
+    assert datetime.fromisoformat(session["expected_end_at"]) - datetime.fromisoformat(session["started_at"]) == QUICK_LIMIT
 
     duplicate = client.post("/api/parking/quick", json={"phone": "+15550101", "license_plate": "XYZ999", "spot_type": "standard"})
     assert duplicate.status_code == 409
