@@ -1,7 +1,7 @@
-from datetime import datetime, timedelta, timezone
-from decimal import Decimal, ROUND_CEILING
+from datetime import UTC, datetime, timedelta
+from decimal import ROUND_CEILING, Decimal
 
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, joinedload
 
 from .errors import api_error
@@ -15,7 +15,6 @@ from .models import (
     Tariff,
 )
 
-
 BUFFER = timedelta(minutes=10)
 NO_SHOW_GRACE = timedelta(minutes=30)
 QUICK_LIMIT = timedelta(hours=4)
@@ -24,13 +23,13 @@ QUICK_MAX_EXTENSION = timedelta(hours=2)
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def as_utc(value: datetime) -> datetime:
     if value.tzinfo is None:
-        return value.replace(tzinfo=timezone.utc)
-    return value.astimezone(timezone.utc)
+        return value.replace(tzinfo=UTC)
+    return value.astimezone(UTC)
 
 
 def validate_period(starts_at: datetime, ends_at: datetime, *, reservation: bool = True) -> tuple[datetime, datetime]:
@@ -97,7 +96,9 @@ def ensure_vehicle_has_no_overlapping_reservation(
     if exclude_reservation_id is not None:
         query = query.where(Reservation.id != exclude_reservation_id)
     if db.scalar(query) is not None:
-        raise api_error(409, "overlapping_vehicle_reservation", "This vehicle already has a reservation for part of this time.")
+        raise api_error(
+            409, "overlapping_vehicle_reservation", "This vehicle already has a reservation for part of this time."
+        )
 
 
 def count_available_capacity(
@@ -168,7 +169,10 @@ def ensure_spot_can_leave_capacity(db: Session, spot: ParkingSpot) -> None:
         )
     ).all()
     for reservation in reservations:
-        if count_available_capacity(db, spot.spot_type, as_utc(reservation.starts_at), as_utc(reservation.ends_at)) <= 0:
+        if (
+            count_available_capacity(db, spot.spot_type, as_utc(reservation.starts_at), as_utc(reservation.ends_at))
+            <= 0
+        ):
             raise api_error(
                 409,
                 "spot_capacity_required",
@@ -208,7 +212,9 @@ def assign_spot(db: Session, spot_type: SpotType, starts_at: datetime, ends_at: 
             .order_by(Reservation.starts_at)
             .limit(1)
         )
-        candidates.append((as_utc(next_reservation) if next_reservation else datetime.max.replace(tzinfo=timezone.utc), spot.number, spot))
+        candidates.append(
+            (as_utc(next_reservation) if next_reservation else datetime.max.replace(tzinfo=UTC), spot.number, spot)
+        )
     if not candidates:
         raise api_error(409, "no_spot_available", "No physical parking spot can be assigned right now.")
     # Prefer the spot with the most distant next reservation, then the lowest number.
@@ -235,7 +241,9 @@ def ensure_extension_allowed(session: ParkingSession, new_end: datetime) -> None
     if session.reservation_id is not None:
         return
     if session.status != SessionStatus.ACTIVE:
-        raise api_error(409, "quick_extension_closed", "Quick parking can only be extended before its expected end time.")
+        raise api_error(
+            409, "quick_extension_closed", "Quick parking can only be extended before its expected end time."
+        )
     if session.extension_count >= 1:
         raise api_error(409, "quick_extension_used", "Quick parking can only be extended once.")
     if new_end - current_end > QUICK_MAX_EXTENSION:

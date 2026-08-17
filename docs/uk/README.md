@@ -47,6 +47,13 @@ Password: admin
 розгортанням створіть `backend/.env` на основі `backend/.env.example` і замініть
 пароль адміністратора та `JWT_SECRET`.
 
+Безпечний хеш нового пароля можна згенерувати без запису пароля в історію shell:
+
+```bash
+cd backend
+../.venv/bin/python -m app.passwords
+```
+
 ## Android
 
 Відкрийте папку `mobile-app/` в Android Studio, запустіть Android-емулятор і

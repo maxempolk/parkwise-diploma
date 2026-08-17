@@ -148,7 +148,13 @@ Password: admin
 These credentials are for local development only. Never expose a deployment
 that uses the default password or secret. Copy `backend/.env.example` to
 `backend/.env`, then set a unique `ADMIN_PASSWORD_HASH` and `JWT_SECRET` before
-running the application outside your own computer.
+running the application outside your own computer. Generate a password hash
+without placing the password in shell history:
+
+```bash
+cd backend
+../.venv/bin/python -m app.passwords
+```
 
 ## Android application
 
@@ -195,8 +201,10 @@ phone and computer must use the same Wi-Fi network.
 Run backend tests:
 
 ```bash
+python -m pip install -r backend/requirements-dev.txt
 cd backend
 ../.venv/bin/python -m pytest
+../.venv/bin/python -m ruff check ..
 ```
 
 Run the frontend test and production build:

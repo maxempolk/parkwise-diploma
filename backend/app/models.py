@@ -73,9 +73,7 @@ class ParkingSession(Base):
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     expected_end_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-    status: Mapped[SessionStatus] = mapped_column(
-        Enum(SessionStatus), default=SessionStatus.ACTIVE, index=True
-    )
+    status: Mapped[SessionStatus] = mapped_column(Enum(SessionStatus), default=SessionStatus.ACTIVE, index=True)
     extension_count: Mapped[int] = mapped_column(default=0)
     rate_per_30_minutes: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
     total_cost: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))

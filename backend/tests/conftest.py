@@ -1,11 +1,10 @@
 import pytest
+from app.database import Base, get_db
+from app.main import app
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-
-from app.database import Base, get_db
-from app.main import app
 
 
 @pytest.fixture
@@ -36,4 +35,3 @@ def admin_headers(client):
     response = client.post("/api/admin/login", json={"username": "admin", "password": "admin"})
     assert response.status_code == 200
     return {"Authorization": f"Bearer {response.json()['access_token']}"}
-

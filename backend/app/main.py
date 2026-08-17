@@ -2,8 +2,8 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException
 
@@ -23,9 +23,10 @@ class SinglePageAppFiles(StaticFiles):
                 raise
             return await super().get_response("index.html", scope)
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "null"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,7 +40,9 @@ app.include_router(admin.router)
 async def validation_error(_: Request, exc: RequestValidationError) -> JSONResponse:
     return JSONResponse(
         status_code=422,
-        content={"detail": {"code": "validation_error", "message": "The submitted data is invalid.", "errors": exc.errors()}},
+        content={
+            "detail": {"code": "validation_error", "message": "The submitted data is invalid.", "errors": exc.errors()}
+        },
     )
 
 

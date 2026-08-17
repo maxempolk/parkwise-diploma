@@ -1,7 +1,7 @@
 """Store the tariff rate used when a parking session starts."""
-from alembic import op
-import sqlalchemy as sa
 
+import sqlalchemy as sa
+from alembic import op
 
 revision = "0002_session_rate"
 down_revision = "0001_initial"

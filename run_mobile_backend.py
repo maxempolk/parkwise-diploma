@@ -1,9 +1,8 @@
 """Build the web client and serve it to the Android emulator through FastAPI."""
 
-from pathlib import Path
 import subprocess
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 FRONTEND = ROOT / "frontend"
