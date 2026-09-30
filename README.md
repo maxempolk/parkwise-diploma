@@ -16,6 +16,21 @@ The project includes a web application and an Android wrapper. The Android app
 uses `WebView` to display the real web interface and communicate with the same
 FastAPI backend.
 
+## Screenshots
+
+Captured from a local build with sample spaces, tariffs, parking sessions and reservations.
+
+**Guest landing page:** live availability and entry points for instant parking and advance booking.
+
+![Parkwise guest page showing parking availability](docs/screenshots/guest-home.jpg)
+
+<details>
+<summary>Administrator dashboard</summary>
+
+![Parkwise administrator dashboard with sample active sessions](docs/screenshots/admin-dashboard.jpg)
+
+</details>
+
 ## Highlights
 
 - Guest flows for instant parking, advance booking, session extension and parking history.
