@@ -1,8 +1,12 @@
 # Parkwise
 
+Parking management MVP with a React web app, FastAPI backend and Android wrapper.
+
+[Source](https://github.com/maxempolk/parkwise-diploma) · [Run locally](#quick-start-on-macos-and-linux) · [Українська документація](docs/uk/README.md)
+
 [![CI](https://github.com/maxempolk/parkwise-diploma/actions/workflows/ci.yml/badge.svg)](https://github.com/maxempolk/parkwise-diploma/actions/workflows/ci.yml)
 
-[Українська версія документації](docs/uk/README.md)
+## About
 
 Parkwise is an educational MVP for managing a private parking facility. Guests
 can start parking immediately or book in advance, while administrators configure
@@ -12,25 +16,23 @@ The project includes a web application and an Android wrapper. The Android app
 uses `WebView` to display the real web interface and communicate with the same
 FastAPI backend.
 
-## Features
+## Highlights
 
-- Instant parking with automatic space assignment.
-- Advance booking by space type, date and time.
-- Standard, EV charging and Accessible space types.
-- Availability checks that consider active sessions, blocks, reservations and a
-  10-minute booking buffer.
-- Session extension and completion with USD pricing in 30-minute blocks.
-- My parking page with current, upcoming and completed records.
-- Administrator dashboard for spaces, blocks, tariffs, sessions, reservations,
-  calendar and basic statistics.
-- JWT authentication for the administrator.
+- Guest flows for instant parking, advance booking, session extension and parking history.
+- Availability logic accounts for active sessions, blocked spaces, reservations and a 10-minute booking buffer.
+- Administrator dashboard manages spaces, tariffs, reservations and active sessions.
+- Shared FastAPI backend for the React web app and Kotlin Android WebView wrapper; workflow tests cover booking and capacity rules.
 
-## Technology stack
+## Tech Stack
 
 - Backend: Python, FastAPI, SQLAlchemy and Alembic.
 - Database: SQLite for local development; PostgreSQL through `DATABASE_URL`.
 - Web client: React, TypeScript, Vite and plain CSS.
 - Mobile application: Kotlin and Android WebView.
+
+## Live Demo
+
+There is no public live demo. Follow the [local quick start](#quick-start-on-macos-and-linux) to run the web app and API, or see the [Android application](#android-application) section to run the mobile wrapper in an emulator.
 
 ## Project structure
 
